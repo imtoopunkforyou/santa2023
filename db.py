@@ -1,9 +1,10 @@
 import os
 import sqlite3
-from typing import List, Tuple
+from typing import List, Tuple, Union, Optional
 
 from conf import PLAYERS_WITH_WISHES
 from utils import make_pairs
+import time
 
 
 class SQLiteClientException(Exception):
@@ -146,3 +147,116 @@ class SQLiteClient(object):
         cursor.execute(query)
 
         self._commit(cursor)
+    
+    def select_all(
+        self,
+    ) -> List[Tuple[int, str, Union[str, None], Union[int, None], Union[int, None]]]:
+        cursor = self.connection.cursor()
+        query = '''
+        SELECT * FROM players;
+        '''
+        players = cursor.execute(query).fetchall()
+        self._commit(cursor)
+        
+        return players
+
+
+    
+    def insert_wish(
+        self,
+        wish: str,
+        player_telegram_id: int,
+    ) -> None:
+        cursor = self.connection.cursor()
+        query = '''
+        UPDATE players
+        SET wish = '%s'
+        WHERE telegram_id = '%s';
+        ''' % (wish, player_telegram_id)
+        cursor.execute(query)
+        self._commit(cursor)
+
+    def get_player_info(
+        self,
+        player_telegram_id: int,
+    ) -> Tuple[str, str, str]:
+        cursor = self.connection.cursor()
+        gift_for_query = '''
+        SELECT name, wish FROM players
+        WHERE santa_id =
+        (SELECT id FROM players
+        WHERE telegram_id = '%s');
+        ''' % (player_telegram_id, )
+        gift_for: str = cursor.execute(gift_for_query).fetchone()[0]
+        wish_for: str = cursor.execute(gift_for_query).fetchone()[1]
+        query = '''
+        SELECT name, wish FROM players
+        WHERE telegram_id = '%s'
+        ''' % (player_telegram_id, )
+        name, wish = cursor.execute(query).fetchone()
+        self._commit(cursor)
+
+        return name, wish, wish_for, gift_for
+    
+    def cheque_telegram_id(
+        self,
+        player_telegram_id: int,
+    ) -> bool:
+        cursor = self.connection.cursor()
+        query = '''
+        SELECT * FROM players
+        WHERE telegram_id = '%s';
+        ''' % (player_telegram_id)
+        result = cursor.execute(query).fetchone()
+        self._commit(cursor)
+
+        if result:
+            return True
+
+        return False
+
+    def add_two_players(
+        self,
+        names: Tuple[str, str],
+    ):  # TODO create only one query
+        cursor = self.connection.cursor()
+        
+        last_id_query = '''
+        SELECT id FROM players
+        ORDER BY id DESC
+        LIMIT 1;
+        '''
+        last_id = cursor.execute(last_id_query).fetchone()[0]
+        
+        first_player_id = last_id + 1
+        second_player_id = last_id + 2
+        
+        query_first_player = '''
+        INSERT INTO players (id, name, santa_id)
+        VALUES ('%s', '%s', '%s');
+        ''' % (first_player_id, names[0], second_player_id)
+
+        query_second_player = '''
+        INSERT INTO players (id, name, santa_id)
+        VALUES ('%s', '%s', '%s');
+        ''' % (second_player_id, names[1], first_player_id)
+
+        cursor.execute(query_first_player)
+        cursor.execute(query_second_player)
+
+        self._commit(cursor)
+    
+    def delete_telegram_id(
+        self,
+        name: str,
+    ):
+        cursor = self.connection.cursor()
+        query = '''
+        UPDATE players
+        SET telegram_id = NULL
+        WHERE name = '%s';
+        ''' % (name, )
+        cursor.execute(query)
+
+        self._commit(cursor)
+

@@ -5,5 +5,6 @@ PLAYERS_WITH_WISHES = (
     ('Timur Valiev', None),
     ('Linus Torvalds', 'He asks not to distract him from work'),
 )
-BOT_ADMINS = ()
+BOT_ADMINS = (
+)
 DATABASE_NAME = 'santa'
