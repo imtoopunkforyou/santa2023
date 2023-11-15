@@ -1,24 +1,37 @@
 import os
 import sqlite3
-from typing import List, Tuple, Union, Optional
+from typing import List, Tuple, Union
 
 from conf import PLAYERS_WITH_WISHES
 from utils import make_pairs
-import time
 
 
 class SQLiteClientException(Exception):
     """Exception for SQLiteClient."""
 
     def __init__(self, message: str = None):
+        """
+        Init SQLiteClientException.
+
+        Args:
+            message (str, optional): message that will be show. Defaults to None.
+        """
         self.message = '\n' + message if message else None
         super().__init__(self.message)
 
 
 class SQLiteClient(object):
+    """Client for SQLite database."""
+
     def __init__(self, name: str):
-        self.name = name + '.db'
-        self.path = './' + self.name
+        """
+        Init SQLiteClient.
+
+        Args:
+            name (str): name of database file.
+        """
+        self.name = name + '.db' if '.db' not in name else name
+        self.path = './src/db/' + self.name
         self.connection = sqlite3.connect(self.path, check_same_thread=False)
         self.cursor = self.connection.cursor()
 
@@ -30,6 +43,7 @@ class SQLiteClient(object):
         cursor.close()
 
     def initialize(self) -> None:
+        """Create database file. Create table."""
         query = '''
         CREATE TABLE IF NOT EXISTS players(
             id INTEGER PRIMARY KEY UNIQUE,
@@ -44,9 +58,18 @@ class SQLiteClient(object):
         self._commit(cursor)
 
     def drop_db(self) -> None:
+        """Remove database file."""
         os.remove(self.path)
 
     def insert_players(self) -> None:
+        """
+        Insert players that are specified in conf.PLAYERS_WITH_WISHES.
+
+        Raises:
+            SQLiteClientException: lenght of players is not even.
+        Returns:
+            NoneType: None
+        """
         if len(PLAYERS_WITH_WISHES) % 2 != 0:
             raise SQLiteClientException('The number of players must be even.')
 
@@ -73,18 +96,8 @@ class SQLiteClient(object):
             cursor.execute(query)
         self._commit(cursor)
 
-    def temp_show_all(self):  # TODO delete.................................................................................
-        query = '''
-        SELECT * FROM players;
-        '''
-        cursor = self.connection.cursor()
-        a = cursor.execute(query)
-        print('*'*30)
-        print(a.fetchall())
-        print('*'*30)
-        self._commit(cursor)
-
     def appoint_santas(self) -> None:
+        """Mixes and creates pairs for players in the database."""
         cursor = self.connection.cursor()
         cursor.row_factory = lambda cursor, row: row[0]
 
@@ -104,6 +117,12 @@ class SQLiteClient(object):
         self._commit(cursor)
 
     def get_players(self) -> List[Tuple[int, str]]:
+        """
+        Show id and name of players.
+
+        Returns:
+            List[Tuple[int, str]]: tuples with id and names of players.
+        """
         cursor = self.connection.cursor()
         query = '''
         SELECT id, name FROM players;
@@ -117,6 +136,16 @@ class SQLiteClient(object):
         self,
         santa_id: str,
     ) -> Tuple[str, str]:
+        """
+        Show player for santa.
+
+        Args:
+            santa_id (str): santa_id in players table.
+        Raises:
+            SQLiteClientException: Santa not found.
+        Returns:
+            Tuple[str, str]: player name and player wish.
+        """
         cursor = self.connection.cursor()
         query = '''
         SELECT name, wish
@@ -138,6 +167,13 @@ class SQLiteClient(object):
         player_id: int,
         telegram_id: int,
     ) -> None:
+        """
+        Insert telegram id from message into player table.
+
+        Args:
+            player_id (int): player pk in players table.
+            telegram_id (int): telegram id from message.
+        """
         cursor = self.connection.cursor()
         query = '''
         UPDATE players
@@ -147,26 +183,30 @@ class SQLiteClient(object):
         cursor.execute(query)
 
         self._commit(cursor)
-    
+
     def select_all(
         self,
     ) -> List[Tuple[int, str, Union[str, None], Union[int, None], Union[int, None]]]:
+        """Show all info from table."""
         cursor = self.connection.cursor()
-        query = '''
-        SELECT * FROM players;
-        '''
+        query = '''SELECT * FROM players;'''
         players = cursor.execute(query).fetchall()
         self._commit(cursor)
-        
+
         return players
 
-
-    
     def insert_wish(
         self,
         wish: str,
         player_telegram_id: int,
     ) -> None:
+        """
+        Insert wish for player.
+
+        Args:
+            wish (str): player wish.
+            player_telegram_id (int): player telegram id from message.
+        """
         cursor = self.connection.cursor()
         query = '''
         UPDATE players
@@ -174,12 +214,22 @@ class SQLiteClient(object):
         WHERE telegram_id = '%s';
         ''' % (wish, player_telegram_id)
         cursor.execute(query)
+
         self._commit(cursor)
 
     def get_player_info(
         self,
         player_telegram_id: int,
     ) -> Tuple[str, str, str]:
+        """
+        Player info for player.
+
+        Args:
+            player_telegram_id (int): player telegram id from message
+        Returns:
+            Tuple[str, str, str]:
+            player name, player wish, the desire of the person to whom you want to give a gift, name who needs a gift
+        """
         cursor = self.connection.cursor()
         gift_for_query = '''
         SELECT name, wish FROM players
@@ -197,11 +247,19 @@ class SQLiteClient(object):
         self._commit(cursor)
 
         return name, wish, wish_for, gift_for
-    
+
     def cheque_telegram_id(
         self,
         player_telegram_id: int,
     ) -> bool:
+        """
+        Cheque whether player telegram_id is in the database.
+
+        Args:
+            player_telegram_id (int): player telegram id from message.
+        Returns:
+            bool: True if player have telegram id.
+        """
         cursor = self.connection.cursor()
         query = '''
         SELECT * FROM players
@@ -219,18 +277,24 @@ class SQLiteClient(object):
         self,
         names: Tuple[str, str],
     ):  # TODO create only one query
+        """
+        Adding two players (for admins).
+
+        Args:
+            names (Tuple[str, str]): two player names.
+        """
         cursor = self.connection.cursor()
-        
+
         last_id_query = '''
         SELECT id FROM players
         ORDER BY id DESC
         LIMIT 1;
         '''
         last_id = cursor.execute(last_id_query).fetchone()[0]
-        
+
         first_player_id = last_id + 1
         second_player_id = last_id + 2
-        
+
         query_first_player = '''
         INSERT INTO players (id, name, santa_id)
         VALUES ('%s', '%s', '%s');
@@ -245,11 +309,17 @@ class SQLiteClient(object):
         cursor.execute(query_second_player)
 
         self._commit(cursor)
-    
+
     def delete_telegram_id(
         self,
         name: str,
     ):
+        """
+        Update of player telegram id to null.
+
+        Args:
+            name (str): player name.
+        """
         cursor = self.connection.cursor()
         query = '''
         UPDATE players
@@ -259,4 +329,3 @@ class SQLiteClient(object):
         cursor.execute(query)
 
         self._commit(cursor)
-
