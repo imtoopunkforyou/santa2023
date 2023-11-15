@@ -1,5 +1,6 @@
 import random
 from typing import List, Tuple
+from conf import BOT_ADMINS
 
 
 def make_pairs(ls: List[int]) -> List[Tuple[int, int]]:
@@ -29,3 +30,10 @@ def make_pairs(ls: List[int]) -> List[Tuple[int, int]]:
         _ls.append(player)
 
     return pairs
+
+
+def is_admin(telegram_id: int) -> bool:
+    if telegram_id in BOT_ADMINS:
+        return True
+
+    return False
