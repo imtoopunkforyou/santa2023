@@ -53,9 +53,8 @@ class CommandsEnum(enum.Enum):
     @classmethod
     def get_user_commands(cls) -> Tuple[str]:
         """All values of attributes like telegram commands."""
-        all_commands = tuple(i for i in cls)
-        user_commands = []
-        for command in all_commands:
+        commands = []
+        for command in tuple(i for i in cls):
             if 'ADMIN_' not in command.name:
-                user_commands.append('/' + command.value)
-        return tuple(user_commands)
+                commands.append('/' + command.value)
+        return tuple(commands)
