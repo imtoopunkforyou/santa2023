@@ -7,5 +7,4 @@ if __name__ == '__main__':
     db.initialize()
     db.insert_players()
     db.appoint_santas()
-
     bot.polling(non_stop=True)
