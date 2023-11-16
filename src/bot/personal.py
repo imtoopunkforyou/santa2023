@@ -4,7 +4,7 @@ from clients import bot, db
 from enums import CommandsEnum
 
 
-@bot.message_handler(commands=[CommandsEnum.ME.value])
+@bot.message_handler(commands=[CommandsEnum.INDIVIDUAL_ME.value])
 def show_info(message: Message) -> None:
     """
     Player info for player.
@@ -16,7 +16,7 @@ def show_info(message: Message) -> None:
     if not db.cheque_telegram_id(telegram_id):
         bot.send_message(
             telegram_id,
-            f'Сначала нужно выбрать себя в списке: /{CommandsEnum.LIST.value}',
+            f'Сначала нужно выбрать себя в списке: /{CommandsEnum.BASE_LIST.value}',
         )
         return
 
@@ -30,7 +30,7 @@ def show_info(message: Message) -> None:
     )
 
 
-@bot.message_handler(commands=[CommandsEnum.WISH.value])
+@bot.message_handler(commands=[CommandsEnum.INDIVIDUAL_WISH.value])
 def input_wish(message: Message) -> None:
     """
     Add wish for player.
@@ -42,7 +42,7 @@ def input_wish(message: Message) -> None:
     if not db.cheque_telegram_id(telegram_id):
         bot.send_message(
             telegram_id,
-            f'Сначала нужно выбрать себя в списке: /{CommandsEnum.LIST.value}',
+            f'Сначала нужно выбрать себя в списке: /{CommandsEnum.BASE_LIST.value}',
         )
         return
 

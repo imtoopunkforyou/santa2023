@@ -5,7 +5,7 @@ from enums import CommandsEnum
 from utils import is_admin
 
 
-@bot.message_handler(commands=[CommandsEnum.DB.value])
+@bot.message_handler(commands=[CommandsEnum.ADMIN_DB.value])
 def show_db(message: Message) -> None:
     """
     Show info about all players.
@@ -51,7 +51,7 @@ def show_db(message: Message) -> None:
     )
 
 
-@bot.message_handler(commands=[CommandsEnum.ADD_PLAYERS.value])
+@bot.message_handler(commands=[CommandsEnum.ADMIN_ADD_PLAYERS.value])
 def insert_players(message: Message) -> None:
     """
     Add two players to players table.
@@ -86,17 +86,17 @@ def add_players(message: Message) -> None:
         bot.send_message(
             telegram_id,
             'Упс, что-то пошло не так, но ничего не сломалось!\n'
-            f'Попробуй ещё раз: /{CommandsEnum.ADD_PLAYERS.value}',
+            f'Попробуй ещё раз: /{CommandsEnum.ADMIN_ADD_PLAYERS.value}',
         )
         return
     db.add_two_players(player_names)
     bot.send_message(
         telegram_id,
-        f'Добавил ребят в список: /{CommandsEnum.LIST.value}',
+        f'Добавил ребят в список: /{CommandsEnum.BASE_LIST.value}',
     )
 
 
-@bot.message_handler(commands=[CommandsEnum.RESTORE_PLAYER.value])
+@bot.message_handler(commands=[CommandsEnum.ADMIN_RESTORE_PLAYER.value])
 def restore_player(message: Message) -> None:
     """
     Delete player registration (update player telegram id to null).
@@ -115,7 +115,7 @@ def restore_player(message: Message) -> None:
 
     response = bot.send_message(
         telegram_id,
-        f'Напиши имя игрока так же, как он записан в /{CommandsEnum.LIST.value}\n'
+        f'Напиши имя игрока так же, как он записан в /{CommandsEnum.BASE_LIST.value}\n'
         'Я прерву его регистрацию и он сможет заново зарегистрироваться\n\n'
         'Это безопасная штука и сделана для того случая, когда кто-то неправильно введёт цифру из списка',
         )

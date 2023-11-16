@@ -1,13 +1,13 @@
 from sqlite3 import IntegrityError
 
-from telebot.types import Message
+from telebot.types import Message, ReplyKeyboardMarkup, KeyboardButton
 
 from clients import bot, db
 from db.db import SQLiteClientException
 from enums import CommandsEnum
 
 
-@bot.message_handler(commands=[CommandsEnum.START.value])
+@bot.message_handler(commands=[CommandsEnum.BASE_START.value])
 def start(message: Message) -> None:
     """
     First step command.
@@ -15,14 +15,20 @@ def start(message: Message) -> None:
     Args:
         message (Message): telegram message from telegram user.
     """
+    markup = ReplyKeyboardMarkup(resize_keyboard=True)
+    for command in CommandsEnum.get_user_commands():
+        button = KeyboardButton(command)
+        markup.add(button)
+
     bot.send_message(
         message.chat.id,
         'Привет! Я бот, который создаёт пары для тайного санты!\n'
-        f'Напиши мне /{CommandsEnum.LIST.value}',
+        f'Напиши мне /{CommandsEnum.BASE_LIST.value}',
+        reply_markup=markup,
     )
 
 
-@bot.message_handler(commands=[CommandsEnum.HELP.value])
+@bot.message_handler(commands=[CommandsEnum.BASE_HELP.value])
 def show_help(message: Message) -> None:
     """
     Show all commands.
@@ -31,7 +37,7 @@ def show_help(message: Message) -> None:
         message (Message): telegram message from telegram user.
     """
     msg = ''
-    for i in tuple('/' + i for i in CommandsEnum.get_values()):
+    for i in CommandsEnum.get_user_commands():
         msg += i + '\n'
 
     bot.send_message(
@@ -40,7 +46,7 @@ def show_help(message: Message) -> None:
     )
 
 
-@bot.message_handler(commands=[CommandsEnum.LIST.value])
+@bot.message_handler(commands=[CommandsEnum.BASE_LIST.value])
 def show_players(message: Message) -> None:
     """
     Show players list.
@@ -60,7 +66,7 @@ def show_players(message: Message) -> None:
     )
 
 
-@bot.message_handler(regexp=CommandsEnum.REGEXP_1_100.value)
+@bot.message_handler(regexp=r'^([1-9][0-9]?|100)$')  # numbers 1-100
 def input_santa_id(message: Message) -> None:
     """
     Show Santa who needs a gift.

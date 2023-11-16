@@ -9,35 +9,36 @@ class CommandsEnum(enum.Enum):
 
     Attributes
     ----------
-    HELP: str
+    BASE_HELP: str
         For show all commands.
-    START: str
+    BASE_START: str
         For first user telegram message.
-    LIST: str
+    BASE_LIST: str
         For show all players. (registration)
-    ME: str
+
+    INDIVIDUAL_ME: str
         For show individual player info.
-    WISH: str
+    INDIVIDUAL_WISH: str
         To add individual player wish.
-    DB: str
+
+    ADMIN_DB: str
         For show all info about players. (admin command).
-    ADD_PLAYERS: str
+    ADMIN_ADD_PLAYERS: str
         To add two players.
-    RESTORE_PLAYER: str
+    ADMIN_RESTORE_PLAYER: str
         To restore player registration.
-    REGEXP_1_100: str
-        Regular expression for numbers in 1-100.
     """
 
-    HELP = 'help'
-    START = 'start'
-    LIST = 'list'
-    ME = 'me'
-    WISH = 'wish'
-    DB = 'db'
-    ADD_PLAYERS = 'add_players'
-    RESTORE_PLAYER = 'restore_player'
-    REGEXP_1_100 = r'^([1-9][0-9]?|100)$'
+    BASE_HELP = 'help'
+    BASE_START = 'start'
+    BASE_LIST = 'list'
+
+    INDIVIDUAL_ME = 'me'
+    INDIVIDUAL_WISH = 'wish'
+
+    ADMIN_DB = 'db'
+    ADMIN_ADD_PLAYERS = 'add_players'
+    ADMIN_RESTORE_PLAYER = 'restore_player'
 
     @classmethod
     def get_names(cls) -> Tuple[str]:
@@ -48,3 +49,13 @@ class CommandsEnum(enum.Enum):
     def get_values(cls) -> Tuple[str]:
         """All values of attributes in class."""
         return tuple(i.value for i in cls)
+
+    @classmethod
+    def get_user_commands(cls) -> Tuple[str]:
+        """All values of attributes like telegram commands."""
+        all_commands = tuple(i for i in cls)
+        user_commands = []
+        for command in all_commands:
+            if 'ADMIN_' not in command.name:
+                user_commands.append('/' + command.value)
+        return tuple(user_commands)
