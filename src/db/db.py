@@ -3,7 +3,8 @@ import sqlite3
 from typing import List, Tuple, Union
 
 from conf import PLAYERS_WITH_WISHES
-from utils import make_pairs
+
+from .utils import make_pairs
 
 
 class SQLiteClientException(Exception):

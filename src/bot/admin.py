@@ -2,7 +2,8 @@ from telebot.types import Message
 
 from clients import bot, db
 from enums import CommandsEnum
-from utils import is_admin
+
+from .utils import is_admin
 
 
 @bot.message_handler(commands=[CommandsEnum.ADMIN_DB.value])

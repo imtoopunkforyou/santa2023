@@ -1,6 +1,6 @@
 from sqlite3 import IntegrityError
 
-from telebot.types import Message, ReplyKeyboardMarkup, KeyboardButton
+from telebot.types import KeyboardButton, Message, ReplyKeyboardMarkup
 
 from clients import bot, db
 from db.db import SQLiteClientException

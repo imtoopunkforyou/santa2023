@@ -1,48 +1,15 @@
-import random
-from typing import List, Tuple
-
-from conf import BOT_ADMINS
+import csv
+from typing import Tuple
 
 
-def make_pairs(ls: List[int]) -> List[Tuple[int, int]]:
-    """
-    Divides list into (player_id, santa_id) pairs.
+def read_players() -> Tuple[Tuple[str, str]]:
+    """Read players from csv file at the start of the game."""
+    with open('players.csv', newline='') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',')
+        temp = []
+        for row in spamreader:
+            if row[1] == 'None':
+                row[1] = None
+            temp.append(row)
 
-    Args:
-        ls (List[int]): List of players ids.
-    Raises:
-        ValueError: Intended for lists of even length only.
-    Returns:
-        List[Tuple[int, int]]: List of (player_id, santa_id) pairs.
-    """
-    if len(ls) % 2 != 0:
-        raise ValueError('List must have even number of elements.')
-
-    _ls = ls.copy()
-    random.shuffle(_ls)
-
-    pairs = []
-
-    for _ in range(len(_ls)):
-        player = _ls[0]
-        santa = _ls[-1]
-        pairs.append((player, santa))
-        _ls.remove(player)
-        _ls.append(player)
-
-    return pairs
-
-
-def is_admin(telegram_id: int) -> bool:
-    """
-    Cheque whether the user is an admin.
-
-    Args:
-        telegram_id (int): user telegram id.
-    Returns:
-        bool: result of checking. True if user is admin.
-    """
-    if telegram_id in BOT_ADMINS:
-        return True
-
-    return False
+    return tuple((name, wish) for name, wish in temp[1:])
