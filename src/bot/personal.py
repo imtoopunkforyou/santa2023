@@ -1,7 +1,8 @@
 from telebot.types import Message
 
 from clients import bot, db
-from enums import CommandsEnum
+
+from .enums import CommandsEnum
 
 
 @bot.message_handler(commands=[CommandsEnum.PERSONAL_ME.value])

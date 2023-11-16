@@ -4,7 +4,8 @@ from telebot.types import KeyboardButton, Message, ReplyKeyboardMarkup
 
 from clients import bot, db
 from db.db import SQLiteClientException
-from enums import CommandsEnum
+
+from .enums import CommandsEnum
 
 
 @bot.message_handler(commands=[CommandsEnum.BASE_START.value])
