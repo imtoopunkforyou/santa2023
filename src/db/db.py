@@ -186,14 +186,39 @@ class SQLiteClient(object):
 
     def select_all(
         self,
-    ) -> List[Tuple[int, str, Union[str, None], Union[int, None], Union[int, None]]]:
+    ) -> List[Tuple[int, str, Union[str, None], str, str, Union[str, None], Union[int, None]]]:
         """Show all info from table."""
         cursor = self.connection.cursor()
         query = '''SELECT * FROM players;'''
         players = cursor.execute(query).fetchall()
+        result = []
+
+        for player in players:
+            player_id: int = player[0]
+            player_name: str = player[1]
+            player_wish: Union[str, None] = player[2]
+            player_santa_id: int = player[3]
+            player_telegram_id: Union[int, None] = player[4]
+            query = '''
+            SELECT name FROM players
+            WHERE id = ('%s');
+            ''' % (player_santa_id, )
+            player_santa_name: str = cursor.execute(query).fetchone()[0]
+            gift_for, gift_wish = self.get_player_for_santa(player_id)
+            result.append(
+                (
+                  player_id,
+                  player_name,
+                  player_wish,
+                  player_santa_name,
+                  gift_for,
+                  gift_wish,
+                  player_telegram_id,
+                ),
+            )
         self._commit(cursor)
 
-        return players
+        return result
 
     def insert_wish(
         self,

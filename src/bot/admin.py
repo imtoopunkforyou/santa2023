@@ -18,7 +18,7 @@ def show_db(message: Message) -> None:
     if not is_admin(telegram_id):
         bot.send_message(
             telegram_id,
-            'Жулик! Ты не админ!',
+            'Ты не админ!',
         )
         return
 
@@ -27,17 +27,24 @@ def show_db(message: Message) -> None:
         player_id = player[0]
         player_name = player[1]
         player_wish = player[2]
-        player_santa_id = player[3]
-        player_telegram_id = player[4]
+        player_santa_name = player[3]
+        gift_for = player[4]
+        gift_wish = player[5]
+        player_telegram_id = player[6]
 
         bot.send_message(
             telegram_id,
-            f'Игрок {player_name}:\n'
+            f'Игрок {player_name}:\n\n'
             f'ID в базе данных: {player_id}\n'
-            f'Пожелание: {player_wish}\n'
-            f'Санта игрока: {player_santa_id}\n'
-            f'ID игрока в телеграмме (если есть, значит уже участвует): {player_telegram_id}',
+            f'Пожелание игрока: {player_wish}\n'
+            f'Санта игрока: {player_santa_name}\n'
+            f'Игрок дарит подарок для: {gift_for}\n'
+            f'Пожалание того, кому игрок дарит подарок: '
+            f'{gift_wish if gift_wish else "Не указано"}\n'
+            'ID пользователя в телеграмме: '
+            f'{player_telegram_id if player_telegram_id else "игрок ещё не зарегистрировался"}',
         )
+
     bot.send_message(
         telegram_id,
         f'Всего игроков: {len(players)}',
@@ -57,7 +64,7 @@ def insert_players(message: Message) -> None:
     if not is_admin(telegram_id):
         bot.send_message(
             telegram_id,
-            'Жулик! Ты не админ!',
+            'Ты не админ!',
         )
         return
 
@@ -102,7 +109,7 @@ def restore_player(message: Message) -> None:
     if not is_admin(telegram_id):
         bot.send_message(
             telegram_id,
-            'Жулик! Ты не админ!',
+            'Ты не админ!',
         )
         return
 
