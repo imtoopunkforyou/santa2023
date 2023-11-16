@@ -81,6 +81,14 @@ def insert_players(message: Message) -> None:
 def add_players(message: Message) -> None:
     """Next step handler for insert_players(...)."""
     telegram_id = message.chat.id
+
+    if '/' in message.text:
+        bot.send_message(
+            message.chat.id,
+            'Упс, что-то пошло не так :(',
+        )
+        return
+
     player_names = tuple(message.text.split(', '))
     if len(player_names) != 2:
         bot.send_message(
@@ -124,6 +132,13 @@ def restore_player(message: Message) -> None:
 
 def restore_telegram_id(message: Message) -> None:
     """Next step handler for restore_player(...)."""
+    if '/' in message.text:
+        bot.send_message(
+            message.chat.id,
+            'Упс, что-то пошло не так :(',
+        )
+        return
+
     db.delete_telegram_id(message.text)
     bot.send_message(
         message.chat.id,

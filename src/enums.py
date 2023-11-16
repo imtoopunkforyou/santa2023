@@ -33,8 +33,8 @@ class CommandsEnum(enum.Enum):
     BASE_START = 'start'
     BASE_LIST = 'list'
 
-    INDIVIDUAL_ME = 'me'
-    INDIVIDUAL_WISH = 'wish'
+    PERSONAL_ME = 'me'
+    PERSONAL_WISH = 'wish'
 
     ADMIN_DB = 'db'
     ADMIN_ADD_PLAYERS = 'add_players'

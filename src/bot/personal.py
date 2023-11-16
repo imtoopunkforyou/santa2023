@@ -4,7 +4,7 @@ from clients import bot, db
 from enums import CommandsEnum
 
 
-@bot.message_handler(commands=[CommandsEnum.INDIVIDUAL_ME.value])
+@bot.message_handler(commands=[CommandsEnum.PERSONAL_ME.value])
 def show_info(message: Message) -> None:
     """
     Player info for player.
@@ -30,7 +30,7 @@ def show_info(message: Message) -> None:
     )
 
 
-@bot.message_handler(commands=[CommandsEnum.INDIVIDUAL_WISH.value])
+@bot.message_handler(commands=[CommandsEnum.PERSONAL_WISH.value])
 def input_wish(message: Message) -> None:
     """
     Add wish for player.
@@ -53,6 +53,14 @@ def input_wish(message: Message) -> None:
 def insert_wish(message: Message) -> None:
     """Next step handler for input_wish(...)."""
     telegram_id = message.chat.id
+
+    if '/' in message.text:
+        bot.send_message(
+            message.chat.id,
+            'Упс, что-то пошло не так :(',
+        )
+        return
+
     db.insert_wish(
         wish=message.text,
         player_telegram_id=telegram_id,
