@@ -3,10 +3,11 @@ from telebot.types import Message
 from clients import bot, db
 
 from .enums import CommandsEnum
-from .utils import is_admin
+from .utils import ban_slash_in_message, is_admin
 
 
 @bot.message_handler(commands=[CommandsEnum.ADMIN_DB.value])
+@is_admin
 def show_db(message: Message) -> None:
     """
     Show info about all players.
@@ -15,13 +16,6 @@ def show_db(message: Message) -> None:
         message (Message): telegram message.
     """
     telegram_id = message.chat.id
-
-    if not is_admin(telegram_id):
-        bot.send_message(
-            telegram_id,
-            'Ты не админ!',
-        )
-        return
 
     players = db.select_all()
     for player in players:
@@ -53,6 +47,7 @@ def show_db(message: Message) -> None:
 
 
 @bot.message_handler(commands=[CommandsEnum.ADMIN_ADD_PLAYERS.value])
+@is_admin
 def insert_players(message: Message) -> None:
     """
     Add two players to players table.
@@ -61,13 +56,6 @@ def insert_players(message: Message) -> None:
         message (Message): telegram message.
     """
     telegram_id = message.chat.id
-
-    if not is_admin(telegram_id):
-        bot.send_message(
-            telegram_id,
-            'Ты не админ!',
-        )
-        return
 
     response = bot.send_message(
         telegram_id,
@@ -79,16 +67,10 @@ def insert_players(message: Message) -> None:
     bot.register_next_step_handler(response, add_players)
 
 
+@ban_slash_in_message(bot)
 def add_players(message: Message) -> None:
     """Next step handler for insert_players(...)."""
     telegram_id = message.chat.id
-
-    if '/' in message.text:
-        bot.send_message(
-            message.chat.id,
-            'Упс, что-то пошло не так :(',
-        )
-        return
 
     player_names = tuple(message.text.split(', '))
     if len(player_names) != 2:
@@ -106,6 +88,7 @@ def add_players(message: Message) -> None:
 
 
 @bot.message_handler(commands=[CommandsEnum.ADMIN_RESTORE_PLAYER.value])
+@is_admin
 def restore_player(message: Message) -> None:
     """
     Delete player registration (update player telegram id to null).
@@ -114,13 +97,6 @@ def restore_player(message: Message) -> None:
         message (Message): telegram message.
     """
     telegram_id = message.chat.id
-
-    if not is_admin(telegram_id):
-        bot.send_message(
-            telegram_id,
-            'Ты не админ!',
-        )
-        return
 
     response = bot.send_message(
         telegram_id,
@@ -131,15 +107,9 @@ def restore_player(message: Message) -> None:
     bot.register_next_step_handler(response, restore_telegram_id)
 
 
+@ban_slash_in_message(bot)
 def restore_telegram_id(message: Message) -> None:
     """Next step handler for restore_player(...)."""
-    if '/' in message.text:
-        bot.send_message(
-            message.chat.id,
-            'Упс, что-то пошло не так :(',
-        )
-        return
-
     db.delete_telegram_id(message.text)
     bot.send_message(
         message.chat.id,

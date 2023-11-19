@@ -3,6 +3,7 @@ from telebot.types import Message
 from clients import bot, db
 
 from .enums import CommandsEnum
+from .utils import ban_slash_in_message
 
 
 @bot.message_handler(commands=[CommandsEnum.PERSONAL_ME.value])
@@ -51,16 +52,10 @@ def input_wish(message: Message) -> None:
     bot.register_next_step_handler(response, insert_wish)
 
 
+@ban_slash_in_message(bot)
 def insert_wish(message: Message) -> None:
     """Next step handler for input_wish(...)."""
     telegram_id = message.chat.id
-
-    if '/' in message.text:
-        bot.send_message(
-            message.chat.id,
-            'Упс, что-то пошло не так :(',
-        )
-        return
 
     db.insert_wish(
         wish=message.text,
