@@ -28,7 +28,7 @@ def show_info(message: Message) -> None:
         f'Имя: {name}\n'
         f'Твоё желание: {wish}\n'
         f'Даришь подарок для: {gift_for}\n'
-        f'Он(а) желает: {wish_for if wish_for else "не указано"}',
+        f'Твой подопечный желает: {wish_for if wish_for else "не указано"}',
     )
 
 
@@ -48,7 +48,7 @@ def input_wish(message: Message) -> None:
         )
         return
 
-    response = bot.send_message(message.chat.id, 'Напиши своё пожелание!')
+    response = bot.send_message(message.chat.id, 'Напиши своё пожелание! Старое пожелание будет заменено на новое')
     bot.register_next_step_handler(response, insert_wish)
 
 
@@ -63,5 +63,5 @@ def insert_wish(message: Message) -> None:
         )
     bot.send_message(
         telegram_id,
-        'Я добавил твоё пожелание!',
+        'Я обновил твоё пожелание!',
     )

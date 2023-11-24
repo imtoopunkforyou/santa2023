@@ -23,8 +23,12 @@ def start(message: Message) -> None:
 
     bot.send_message(
         message.chat.id,
-        'Привет! Я бот, который создаёт пары для тайного санты!\n'
-        f'Напиши мне /{CommandsEnum.BASE_LIST.value}',
+        'Привет! Я бот, который создаёт пары для тайного Санты!\n'
+        f'Для регистрации напиши мне /{CommandsEnum.BASE_LIST.value} и отправь мне свой номер из списка участников.\n'
+        'А еще ты можешь написать пожелание для своего тайного Санты, чтобы ему было проще выбрать подарок для тебя! '
+        f'Сделать это можно с помощью команды /{CommandsEnum.INDIVIDUAL_WISH.value}\n'
+        f'Если хочешь, чтобы я напомнил всю информацию о своем подопечном - просто напиши мне /{CommandsEnum.INDIVIDUAL_ME.value}\n'
+        f'Список всех доступных команд можно увидеть, если напишешь /{CommandsEnum.BASE_HELP.value}',
         reply_markup=markup,
     )
 
@@ -39,11 +43,12 @@ def show_help(message: Message) -> None:
     """
     bot.send_message(
         message.chat.id,
-        'Доступные комманды:\n'
-        '/help - список доступных команд\n'
-        '/list - список всех участников\n'
-        '/me - напоминалка\n'
-        '/wish - добавить желание',
+        'Привет! Я бот, который создаёт пары для тайного Санты!\n'
+        f'Для регистрации напиши мне /{CommandsEnum.BASE_LIST.value} и отправь мне свой номер из списка участников.\n'
+        'А еще ты можешь написать пожелание для своего тайного Санты, чтобы ему было проще выбрать подарок для тебя! '
+        f'Сделать это можно с помощью команды /{CommandsEnum.INDIVIDUAL_WISH.value}\n'
+        f'Если хочешь, чтобы я напомнил всю информацию о своем подопечном - просто напиши мне /{CommandsEnum.INDIVIDUAL_ME.value}\n'
+        f'Список всех доступных команд можно увидеть, если напишешь /{CommandsEnum.BASE_HELP.value}',
     )
 
 
@@ -103,5 +108,5 @@ def input_santa_id(message: Message) -> None:
         santa_telegram_id,
         'Ты большой молодец!\n'
         f'Ты стал(а) Тайным Сантой для {player_name}.\n'
-        f'Пожалание игрока: {player_wish if player_wish else "не указано"}',
+        f'Пожелание твоего подопечного: {player_wish if player_wish else "не указано"}',
     )
