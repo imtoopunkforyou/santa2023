@@ -27,7 +27,7 @@ def start(message: Message) -> None:
         f'Для регистрации напиши мне /{CommandsEnum.BASE_LIST.value} и отправь мне свой номер из списка участников.\n'
         'А еще ты можешь написать пожелание для своего тайного Санты, чтобы ему было проще выбрать подарок для тебя! '
         f'Сделать это можно с помощью команды /{CommandsEnum.PERSONAL_WISH.value}\n'
-        f'Если хочешь, чтобы я напомнил всю информацию о своем подопечном - просто напиши мне /{CommandsEnum.PERSONAL_ME.value}\n'
+        f'Если хочешь, чтобы я напомнил всю информацию о твоем подопечном - просто напиши мне /{CommandsEnum.PERSONAL_ME.value}\n'
         f'Список всех доступных команд можно увидеть, если напишешь /{CommandsEnum.BASE_HELP.value}',
         reply_markup=markup,
     )
@@ -41,15 +41,18 @@ def show_help(message: Message) -> None:
     Args:
         message (Message): telegram message from telegram user.
     """
-    bot.send_message(
-        message.chat.id,
-        'Привет! Я бот, который создаёт пары для тайного Санты!\n'
-        f'Для регистрации напиши мне /{CommandsEnum.BASE_LIST.value} и отправь мне свой номер из списка участников.\n'
-        'А еще ты можешь написать пожелание для своего тайного Санты, чтобы ему было проще выбрать подарок для тебя! '
-        f'Сделать это можно с помощью команды /{CommandsEnum.PERSONAL_WISH.value}\n'
-        f'Если хочешь, чтобы я напомнил всю информацию о твоем подопечном - просто напиши мне /{CommandsEnum.PERSONAL_ME.value}\n'
-        f'Список всех доступных команд можно увидеть, если напишешь /{CommandsEnum.BASE_HELP.value}',
-    )
+
+    start(message)
+
+    #bot.send_message(
+    #    message.chat.id,
+    #    'Привет! Я бот, который создаёт пары для тайного Санты!\n'
+    #    f'Для регистрации напиши мне /{CommandsEnum.BASE_LIST.value} и отправь мне свой номер из списка участников.\n'
+    #    'А еще ты можешь написать пожелание для своего тайного Санты, чтобы ему было проще выбрать подарок для тебя! '
+    #    f'Сделать это можно с помощью команды /{CommandsEnum.PERSONAL_WISH.value}\n'
+    #    f'Если хочешь, чтобы я напомнил всю информацию о твоем подопечном - просто напиши мне /{CommandsEnum.PERSONAL_ME.value}\n'
+    #    f'Список всех доступных команд можно увидеть, если напишешь /{CommandsEnum.BASE_HELP.value}',
+    #)
 
 
 @bot.message_handler(commands=[CommandsEnum.BASE_LIST.value])
