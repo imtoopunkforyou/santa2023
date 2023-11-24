@@ -16,9 +16,9 @@ class CommandsEnum(enum.Enum):
     BASE_LIST: str
         For show all players. (registration)
 
-    INDIVIDUAL_ME: str
+    PERSONAL_ME: str
         For show individual player info.
-    INDIVIDUAL_WISH: str
+    PERSONAL_WISH: str
         To add individual player wish.
 
     ADMIN_DB: str
