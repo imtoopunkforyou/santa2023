@@ -37,13 +37,13 @@ def show_help(message: Message) -> None:
     Args:
         message (Message): telegram message from telegram user.
     """
-    msg = ''
-    for i in CommandsEnum.get_user_commands():
-        msg += i + '\n'
-
     bot.send_message(
         message.chat.id,
-        'Доступные комманды:\n' + msg,
+        'Доступные комманды:\n'
+        '/help - список доступных команд\n'
+        '/list - список всех участников\n'
+        '/me - напоминалка\n'
+        '/wish - добавить желание',
     )
 
 

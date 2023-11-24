@@ -55,6 +55,6 @@ class CommandsEnum(enum.Enum):
         """All values of attributes like telegram commands."""
         commands = []
         for command in tuple(i for i in cls):
-            if 'ADMIN_' not in command.name:
+            if 'HELP' in command.name:
                 commands.append('/' + command.value)
         return tuple(commands)
