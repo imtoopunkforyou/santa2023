@@ -236,10 +236,10 @@ class SQLiteClient(object):
         cursor = self.connection.cursor()
         query = '''
         UPDATE players
-        SET wish = '%s'
-        WHERE telegram_id = '%s';
-        ''' % (wish, player_telegram_id)
-        cursor.execute(query)
+        SET wish = ?
+        WHERE telegram_id = ?;
+        '''
+        cursor.execute(query, (wish, player_telegram_id))
 
         self._commit(cursor)
 
