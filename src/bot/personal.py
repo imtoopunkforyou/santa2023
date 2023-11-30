@@ -48,7 +48,8 @@ def input_wish(message: Message) -> None:
         )
         return
 
-    response = bot.send_message(message.chat.id, 'Напиши своё пожелание! Старое пожелание будет заменено на новое')
+    response = bot.send_message(message.chat.id, 'Напиши своё пожелание! Старое пожелание будет заменено на новое.\n'
+                                'Пожалуйста, рассчитывай, что подарки мы дарим в пределах 1000 рублей')
     bot.register_next_step_handler(response, insert_wish)
 
 
