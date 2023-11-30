@@ -32,7 +32,7 @@ class SQLiteClient(object):
             name (str): name of database file.
         """
         self.name = name + '.db' if '.db' not in name else name
-        self.path = './src/db/' + self.name
+        self.path = './src/db/database/' + self.name
         self.connection = sqlite3.connect(self.path, check_same_thread=False)
         self.cursor = self.connection.cursor()
 
