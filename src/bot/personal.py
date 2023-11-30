@@ -56,12 +56,6 @@ def input_wish(message: Message) -> None:
 def insert_wish(message: Message) -> None:
     """Next step handler for input_wish(...)."""
     telegram_id = message.chat.id
-    if ';' in message.text:
-        bot.send_message(
-            telegram_id,
-            'А ты шутник! :)',
-            )
-        return
 
     db.insert_wish(
         wish=message.text,
