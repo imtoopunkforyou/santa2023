@@ -52,7 +52,7 @@ def input_wish(message: Message) -> None:
     bot.register_next_step_handler(response, insert_wish)
 
 
-@ban_slash_in_message(bot)
+#@ban_slash_in_message(bot)
 def insert_wish(message: Message) -> None:
     """Next step handler for input_wish(...)."""
     telegram_id = message.chat.id
